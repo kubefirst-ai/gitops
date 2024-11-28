@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: selfhosted-ai-metaphor
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: '100'
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:kubefirst-ai/gitops.git
+    path: registry/environments/selfhosted-ai/metaphor
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    name: selfhosted-ai
+    namespace: selfhosted-ai
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

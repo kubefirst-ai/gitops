@@ -1,0 +1,23 @@
+apiVersion: tf.upbound.io/v1beta1
+kind: Workspace
+metadata:
+  name: selfhosted-ai-infrastructure
+spec:
+  providerConfigRef: 
+    name: selfhosted-ai
+  forProvider:
+    source: Remote
+    module: git::https://github.com/kubefirst-ai/gitops.git//terraform/civo/modules/workload-cluster?ref=main
+    vars:
+    - key: cluster_name
+      value: selfhosted-ai
+    - key: cluster_region
+      value: lon1
+    - key: environment
+      value: selfhosted-ai
+    - key: node_count
+      value: "1"
+    - key: node_type
+      value: g4g.kube.small
+    - key: is_gpu
+      value: "true"
