@@ -1,0 +1,32 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: spotlight-kyverno
+  namespace: argocd
+  annotations:
+    kubefirst.konstruct.io/application-name: kyverno
+    kubefirst.konstruct.io/source: catalog-templates
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: kyverno
+    name: in-cluster
+  project: default
+  source:
+    chart: kyverno
+    repoURL: https://kyverno.github.io/kyverno
+    targetRevision: v3.0.4
+    helm:
+      releaseName: kyverno
+      # values: |
+      #   example: value
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      # https://kyverno.io/docs/installation/platform-notes/#notes-for-argocd-users
+      - Replace=true
