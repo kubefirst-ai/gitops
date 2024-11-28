@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kubefirst
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+spec:
+  project: default
+  source:
+    repoURL: https://charts.konstruct.io
+    targetRevision: 2.7.6
+    chart: kubefirst-pro
+    helm:
+      values: |-
+        global:
+          cloudProvider: "civo"
+          clusterId: "0vzcwy"
+          clusterType: "mgmt"
+          domainName: "kubefirst.ai"
+          gitProvider: "github"
+          installMethod: "helm"
+          kubefirstClient: "<KUBEFIRST_CLIENT>"
+          kubefirstTeam: "true"
+          kubefirstTeamInfo: "john"
+          kubefirstVersion: "v2.7.6"
+          useTelemetry: ""
+        kubefirst-pro-api:
+          extraEnv:
+            CLUSTER_NAME: "spotlight"
+        kubefirst-pro-ui:
+          domain: "kubefirst.ai"
+          extraEnvSecrets:
+            CLIENT_ID:
+              name: kubefirst-console-secrets
+              key: client_id
+            SECRET_ID:
+              name: kubefirst-console-secrets
+              key: client_secret
+          ingress:
+            enabled: "true"
+            className: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: "letsencrypt-prod"
+              
+              
+              
+            hosts:
+              - host: kubefirst.kubefirst.ai
+                paths:
+                  - path: /
+                    pathType: Prefix
+            tls:
+              - secretName: kubefirst-tls
+                hosts:
+                  - kubefirst.kubefirst.ai
+  destination:
+    name: in-cluster
+    namespace: kubefirst
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
