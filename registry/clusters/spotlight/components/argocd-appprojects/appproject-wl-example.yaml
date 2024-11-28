@@ -1,0 +1,55 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: wl-example
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: wl-example description
+  sourceRepos:
+  - 'git@github.com:kubefirst-ai/gitops.git'
+  - 'https://kubernetes.github.io/ingress-nginx'
+  - 'https://kubernetes-sigs.github.io/external-dns'
+  - 'https://charts.jetstack.io'
+  - 'https://charts.external-secrets.io'
+  - 'https://helm.datadoghq.com'
+  - 'https://stakater.github.io/stakater-charts'
+  - 'https://chartmuseum.kubefirst.ai'
+  - 'https://charts.loft.sh'
+  - 'https://github.com/cloudflare/origin-ca-issuer'
+  - 'https://cloudflare.github.io/origin-ca-issuer/charts'
+  - '*' # Adding wildcard for the gitops catalog. This wildcard can be removed from the template or after provisioning
+  destinations:
+  - namespace: external-dns
+    name: wl-example
+  - namespace: datadog
+    name: wl-example
+  - namespace: default
+    name: wl-example
+  - namespace: wl-example
+    name: wl-example
+  - namespace: external-secrets-operator
+    name: wl-example
+  - namespace: reloader
+    name: wl-example
+  - namespace: cert-manager
+    name: wl-example
+  - namespace: ingress-nginx
+    name: wl-example
+  - namespace: kube-system
+    name: wl-example
+  - namespace: '*' # Adding wildcard for the gitops catalog. This wildcard can be removed from the template or after provisioning
+    server: '*' # Adding wildcard for the gitops catalog. This wildcard can be removed from the template or after provisioning
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  roles:
+  - description: wl-example-admin-role
+    groups:
+    - admins
+    name: admin-role
+    policies:
+    - p, proj:wl-example:admin-role, applications, *, wl-example/*, allow
