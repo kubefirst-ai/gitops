@@ -1,52 +1,54 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: selfhosted-ai-openwebui
-#   namespace: argocd
-#   annotations:
-#     argocd.argoproj.io/sync-wave: '50'
-# spec:
-#   project: selfhosted-ai
-#   source:
-#     repoURL: https://helm.openwebui.com/  # The Helm repository for Open WebUI
-#     targetRevision: v4.0.6  # Set to the desired version of the chart or use 'latest'
-#     chart: open-webui  # The chart name in the Helm repository
-#     helm:
-#       releaseName: open-webui
-#       values: |
-#         image:
-#           repository: ghcr.io/open-webui/open-webui
-#           tag: 0.4.7-cuda
-#         serviceAccount:
-#           create: true
-#           name: openwebui-sa
-#         ports:
-#           - name: http
-#             containerPort: 8080
-#             hostPort: 3000
-#         extraArgs:
-#           - "--gpus all"
-#         extraHosts:
-#           - "host.docker.internal:host-gateway"
-#         persistentVolume:
-#             enabled: true
-#             size: 50Gi
-#         ingress:
-#           enabled: true
-#           class: "nginx"
-#           annotations: 
-#             nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-#             nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-#             cert-manager.io/cluster-issuer: "letsencrypt-prod"
-#           host: "ollama.kubefirst.ai"
-#           tls: true
-#           existingSecret: "selfhosted-ai-ollama-http-ingress"
-#   destination:
-#     name: selfhosted-ai
-#     namespace: openwebui
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
-#     syncOptions:
-#       - CreateNamespace=true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: selfhosted-ai-openwebui
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '50'
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: selfhosted-ai
+  source:
+    repoURL: https://helm.openwebui.com/  # The Helm repository for Open WebUI
+    # targetRevision: v4.0.6  # Set to the desired version of the chart or use 'latest'
+    chart: open-webui  # The chart name in the Helm repository
+    helm:
+      releaseName: open-webui
+      values: |
+        image:
+          repository: ghcr.io/open-webui/open-webui
+          tag: 0.4.7-cuda
+        serviceAccount:
+          create: true
+          name: openwebui-sa
+        ports:
+          - name: http
+            containerPort: 8080
+            hostPort: 3000
+        extraArgs:
+          - "--gpus all"
+        extraHosts:
+          - "host.docker.internal:host-gateway"
+        persistentVolume:
+            enabled: true
+            size: 50Gi
+        ingress:
+          enabled: true
+          class: "nginx"
+          annotations: 
+            nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+            cert-manager.io/cluster-issuer: "letsencrypt-prod"
+          host: "ollama.kubefirst.ai"
+          tls: true
+          existingSecret: "selfhosted-ai-ollama-http-ingress"
+  destination:
+    name: selfhosted-ai
+    namespace: openwebui
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
