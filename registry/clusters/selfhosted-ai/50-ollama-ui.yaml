@@ -11,14 +11,14 @@ spec:
   project: selfhosted-ai
   source:
     repoURL: https://helm.openwebui.com/  # The Helm repository for Open WebUI
-    # targetRevision: v4.0.6  # Set to the desired version of the chart or use 'latest'
+    targetRevision: v4.0.6  # Set to the desired version of the chart or use 'latest'
     chart: open-webui  # The chart name in the Helm repository
     helm:
       releaseName: open-webui
       values: |
         image:
           repository: ghcr.io/open-webui/open-webui
-          tag: 0.4.7-cuda
+          # tag: 0.4.7-cuda
         serviceAccount:
           create: true
           name: openwebui-sa
