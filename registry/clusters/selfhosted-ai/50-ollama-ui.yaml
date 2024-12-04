@@ -16,7 +16,7 @@ spec:
       values: |
         image:
           repository: ghcr.io/open-webui/open-webui
-          tag: 0.4.7-cuda
+          tag: 0.3.24-cuda
         serviceAccount:
           create: true
           name: openwebui-sa
