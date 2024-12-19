@@ -2,7 +2,7 @@ apiVersion: v2
 dependencies:
   - name: metaphor
     repository: http://chartmuseum.chartmuseum.svc.cluster.local:8080
-    version: 0.1.0-rc.b2adffc
+    version: 0.1.0-rc.donna
 description: metaphor example application
 name: metaphor
 type: application
